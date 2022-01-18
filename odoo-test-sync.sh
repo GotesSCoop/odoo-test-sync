@@ -29,6 +29,8 @@ TEST_DOCKERCOMPOSE_PATH="$TEST_BASE_PATH/docker-compose.yml" # docker-compose.ym
 PROD_DATA_FOLDER="/srv/docker/odoo12/odoo_data" # Production data folder
 TEST_DATA_FOLDER="$TEST_BASE_PATH/odoo_data" # Test environment data folder
 
+MAIL_SERVER="smtp.google.com" # Mail server to search and remove from database
+
 status=$(docker-compose -f "$TEST_DOCKERCOMPOSE_PATH" ps -q)
 if [ ! -z "$status" ]; then 
   echo "Stopping containers... "
@@ -51,7 +53,7 @@ echo "Done"
 # Edit backup here
 
 echo "Replacing mail server"
-sed -i -e 's/in-v3.mailjet.com/no-smtp/g' $BACKUP_NAME
+sed -i -e "s/$MAIL_SERVER/no-smtp/g" $BACKUP_NAME
 
 echo "Restoring backup to container $TEST_DB_CONTAINER..."
 docker cp $BACKUP_NAME $TEST_DB_CONTAINER:/tmp
